@@ -1,10 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Brain, Lightbulb, TrendingUp, AlertTriangle, Award } from 'lucide-react';
-import { storage } from '../utils/storage';
+import { createStorage } from '../utils/storage';
+import { UserContext } from '../context/UserContext';
 import { WorkoutSession, AthleticTest, ShootingSession, AIInsight } from '../types';
 import { ATHLETIC_TESTS, WORKOUT_TYPES } from '../utils/constants';
 
 const AICoach: React.FC = () => {
+  const { user } = useContext(UserContext);
+  const storage = createStorage(user);
+
   const [workouts, setWorkouts] = useState<WorkoutSession[]>([]);
   const [athleticTests, setAthleticTests] = useState<AthleticTest[]>([]);
   const [shootingSessions, setShootingSessions] = useState<ShootingSession[]>([]);
@@ -15,7 +19,7 @@ const AICoach: React.FC = () => {
     setAthleticTests(storage.getAthleticTests());
     setShootingSessions(storage.getShootingSessions());
     setInsights(storage.getAIInsights());
-  }, []);
+  }, [user]);
 
   const generateInsights = () => {
     const newInsights: AIInsight[] = [];

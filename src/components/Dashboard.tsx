@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { 
   TrendingUp, 
   Target, 
@@ -8,12 +8,16 @@ import {
   Timer,
   Zap
 } from 'lucide-react';
-import { storage } from '../utils/storage';
+import { createStorage } from '../utils/storage';
+import { UserContext } from '../context/UserContext';
 import { WorkoutSession, AthleticTest, ShootingSession } from '../types';
 import { format, startOfWeek, endOfWeek, isWithinInterval } from 'date-fns';
 import { fr } from 'date-fns/locale';
 
 const Dashboard: React.FC = () => {
+  const { user } = useContext(UserContext);
+  const storage = createStorage(user);
+
   const [workouts, setWorkouts] = useState<WorkoutSession[]>([]);
   const [athleticTests, setAthleticTests] = useState<AthleticTest[]>([]);
   const [shootingSessions, setShootingSessions] = useState<ShootingSession[]>([]);
@@ -22,7 +26,7 @@ const Dashboard: React.FC = () => {
     setWorkouts(storage.getWorkouts());
     setAthleticTests(storage.getAthleticTests());
     setShootingSessions(storage.getShootingSessions());
-  }, []);
+  }, [user]);
 
   const getWeeklyStats = () => {
     const now = new Date();
