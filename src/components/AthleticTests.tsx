@@ -1,10 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Plus, Save, Trash2, Edit, TrendingUp } from 'lucide-react';
-import { storage } from '../utils/storage';
+import { createStorage } from '../utils/storage';
+import { UserContext } from '../context/UserContext';
 import { AthleticTest } from '../types';
 import { ATHLETIC_TESTS } from '../utils/constants';
 
 const AthleticTests: React.FC = () => {
+  const { user } = useContext(UserContext);
+  const storage = createStorage(user);
+
   const [tests, setTests] = useState<AthleticTest[]>([]);
   const [isEditing, setIsEditing] = useState(false);
   const [editingTest, setEditingTest] = useState<AthleticTest | null>(null);
@@ -17,7 +21,7 @@ const AthleticTests: React.FC = () => {
 
   useEffect(() => {
     loadTests();
-  }, []);
+  }, [user]);
 
   const loadTests = () => {
     setTests(storage.getAthleticTests());

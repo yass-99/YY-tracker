@@ -1,10 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Plus, Save, Trash2, Edit } from 'lucide-react';
-import { storage } from '../utils/storage';
+import { createStorage } from '../utils/storage';
+import { UserContext } from '../context/UserContext';
 import { WorkoutSession, Exercise } from '../types';
 import { WORKOUT_TYPES } from '../utils/constants';
 
 const WorkoutTracker: React.FC = () => {
+  const { user } = useContext(UserContext);
+  const storage = createStorage(user);
+
   const [workouts, setWorkouts] = useState<WorkoutSession[]>([]);
   const [isEditing, setIsEditing] = useState(false);
   const [editingWorkout, setEditingWorkout] = useState<WorkoutSession | null>(null);
@@ -18,7 +22,7 @@ const WorkoutTracker: React.FC = () => {
 
   useEffect(() => {
     loadWorkouts();
-  }, []);
+  }, [user]);
 
   const loadWorkouts = () => {
     setWorkouts(storage.getWorkouts());

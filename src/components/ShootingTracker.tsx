@@ -1,10 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Save, Trash2, Edit, Target, Plus, X, BarChart2 } from 'lucide-react';
-import { storage } from '../utils/storage';
+import { createStorage } from '../utils/storage';
+import { UserContext } from '../context/UserContext';
 import { ShootingSession, ShootingZone } from '../types';
 import { SHOOTING_ZONES } from '../utils/constants';
 
 const ShootingTracker: React.FC = () => {
+  const { user } = useContext(UserContext);
+  const storage = createStorage(user);
+
   const [sessions, setSessions] = useState<ShootingSession[]>([]);
   const [currentSession, setCurrentSession] = useState<ShootingZone[]>(
     SHOOTING_ZONES.map(zone => ({ zone: zone.id, attempts: 0, makes: 0, percentage: 0 }))
@@ -16,7 +20,7 @@ const ShootingTracker: React.FC = () => {
 
   useEffect(() => {
     loadSessions();
-  }, []);
+  }, [user]);
 
   const loadSessions = () => {
     setSessions(storage.getShootingSessions());

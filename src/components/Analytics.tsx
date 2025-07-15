@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { BarChart3, TrendingUp, Calendar, Target } from 'lucide-react';
 import { Line, Bar, Doughnut } from 'react-chartjs-2';
 import {
@@ -13,7 +13,8 @@ import {
   Legend,
   ArcElement
 } from 'chart.js';
-import { storage } from '../utils/storage';
+import { createStorage } from '../utils/storage';
+import { UserContext } from '../context/UserContext';
 import { WorkoutSession, AthleticTest, ShootingSession } from '../types';
 import { ATHLETIC_TESTS, SHOOTING_ZONES, WORKOUT_TYPES } from '../utils/constants';
 import { format, subDays, startOfWeek, endOfWeek } from 'date-fns';
@@ -32,6 +33,9 @@ ChartJS.register(
 );
 
 const Analytics: React.FC = () => {
+  const { user } = useContext(UserContext);
+  const storage = createStorage(user);
+
   const [workouts, setWorkouts] = useState<WorkoutSession[]>([]);
   const [athleticTests, setAthleticTests] = useState<AthleticTest[]>([]);
   const [shootingSessions, setShootingSessions] = useState<ShootingSession[]>([]);
@@ -41,7 +45,7 @@ const Analytics: React.FC = () => {
     setWorkouts(storage.getWorkouts());
     setAthleticTests(storage.getAthleticTests());
     setShootingSessions(storage.getShootingSessions());
-  }, []);
+  }, [user]);
 
   const getFilteredData = () => {
     const now = new Date();
